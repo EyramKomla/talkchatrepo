@@ -1,5 +1,22 @@
-import { StyleSheet, Text, View, Button, Dimensions,ScrollView, CheckBox, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions,ScrollView, CheckBox, Image, TouchableOpacity} from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SignInScreen from './signInScreen';
+
+const Stack = createNativeStackNavigator();
+
+export function LoginStack(){
+    return (
+        <Stack.Navigator>
+
+            <Stack.Screen 
+                name="SignInScreen"
+                component={SignInScreen}/>
+        
+        </Stack.Navigator>
+    );
+}
 
 function LoginOptions({text, icon}){
     return (
@@ -29,7 +46,7 @@ function LoginOptions({text, icon}){
     )
 }
 
-export default function LoginScreen(){
+export default function LoginScreen({navigation}){
     return (
         <View style={styles.loginContainer}>
             <Image source={require('../assets/talkchat-logo.jpg')} style={{width:200, height: 200}}/>
@@ -52,9 +69,23 @@ export default function LoginScreen(){
                
                 <View style={{
                     flexDirection:"row",
-                    alignItems: "center"
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderTopWidth:1,
+                    width:"100%",
+                    height:30,
                 }}>
-        
+                    <Text style={{alignItems:"center"}}>Don't have an account?</Text>
+                    <TouchableOpacity style={{
+                        paddingLeft:10,
+                        paddingRight:10,
+                        marginLeft:10,
+                        borderRadius:5,
+                        borderWidth:1,
+                        borderColor:"rgb(84, 18, 146)",
+                    }}>
+                        <Text>Sign In</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

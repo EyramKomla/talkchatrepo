@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, Dimensions,ScrollView, StatusBar, Image, TouchableOpacity, TextInput} from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions,ScrollView, StatusBar, Image, TouchableOpacity, TextInput, SafeAreaView} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -6,7 +6,7 @@ import  FontAwesome  from '@expo/vector-icons/FontAwesome';
 import LoginScreen from './loginScreen';
 import ExpandedContentView from './expandedContentView';
 import SearchScreen from './searchScreen';
-import { SearchBar } from './searchScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,10 @@ const Stack = createNativeStackNavigator();
 export function HomeStack(){
     return(
         <Stack.Navigator screenOptions={{headerShown:false}}>
-            <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+            <Stack.Screen 
+                name="HomeScreen" 
+                component={HomeScreen}
+                options={{headerTitle:""}}/>
             <Stack.Screen 
                 name="LoginScreen" 
                 component={LoginScreen}
@@ -43,7 +46,7 @@ export function HomeStack(){
 }
 export default function HomeScreen({navigation}){
     return(
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Header navigation={navigation}/>
             <ScrollView style={styles.scrollView}>
                 <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
@@ -56,7 +59,7 @@ export default function HomeScreen({navigation}){
                
                 <Button title="Login" onPress={() => navigation.navigate("LoginScreen")}/>   
             </ScrollView>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -105,7 +108,7 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
                         flex: 6,
                         justifyContent: 'center',
                     }}>
-                        <Text style={{fontWeight:'600', color:"rgb(61, 64, 66)"}}>r/TalkChatForum</Text>
+                        <Text style={{fontWeight:'600', color:"rgb(61, 64, 66)"}}>t/TalkChatForum</Text>
                     </View>
                 </View>
 
@@ -180,6 +183,19 @@ function Header({navigation}){
     )
 }
 
+function SearchBar({ placeholder, onSearch }){
+    return (
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          selectionColor={'purple'}
+        />
+      </View>
+    );
+  };
+
 
 //Component Styling
 const styles = StyleSheet.create({
@@ -188,8 +204,23 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
     },
-    
-    
+    searchContainer:{
+        width:Dimensions.get('window').width * 0.75,
+        backgroundColor: "rgb(183, 192, 198)",
+        paddingLeft:10,
+        paddingRight:10,
+        height: 35,
+        flexDirection:"row",
+        alignItems: 'center',
+        borderRadius: 10,
+    },
+    searchIcon: {
+        marginRight: 0,
+        flex:1
+    },
+    input:{
+        flex:8,
+    },
     header:{
         height: 100,
         width: "100%",

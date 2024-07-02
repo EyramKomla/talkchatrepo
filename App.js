@@ -7,7 +7,7 @@ import CommunityScreen from "./screens/communityScreen.js";
 import LoginScreen from './screens/loginScreen.js';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ProfileScreen from './screens/profileScreen.js';
-import PostScreen from './screens/postScreen.js';
+import CreateScreen from './screens/postScreen.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +38,7 @@ function AppTabs(){
       
       <Tab.Screen 
         name="Post" 
-        component={PostScreen} 
+        component={CreateScreen} 
         options={{tabBarIcon:() => <Ionicons name="add-circle" size={24}/>,
         headerShown:false,}}/>
 
