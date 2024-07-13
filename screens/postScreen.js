@@ -4,6 +4,8 @@ import  FontAwesome  from '@expo/vector-icons/FontAwesome';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import Icon from '@expo/vector-icons/Ionicons';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { db } from '../firebase';
+import { addDoc } from 'firebase/firestore';
 
   export default function CreateScreen({ navigation }){
     const [selectedValue, setSelectedValue] = React.useState("");
@@ -14,6 +16,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
     return (
       <View style={altStyles.screenContainer}>
         <View style={altStyles.searchContainer}>
+          
           <View style={altStyles.searchBar}>
             <TextInput
               style={altStyles.searchInput}
@@ -23,6 +26,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
             />
             
           </View>
+
           <View style={altStyles.iconContainer}>
             <TouchableOpacity style={altStyles.icon}>
               <Icon name="menu-outline" size={30} color="black" />
@@ -40,6 +44,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
             <FontAwesome6 name="bars-progress" size={24} color="black"/>
             </TouchableOpacity>
           </View>
+          
           <View style={altStyles.richTextBoxContainer}>
             <TextInput
               style={[altStyles.richTextBox, altStyles.titleInput]}
@@ -58,11 +63,13 @@ import { FontAwesome6 } from '@expo/vector-icons';
               numberOfLines={5} // Set a maximum number of lines
             />
           </View>
+          
           <View style={altStyles.buttonContainer}>
             <TouchableOpacity style={altStyles.button}>
               <Text style={altStyles.buttonText}>Post</Text>
             </TouchableOpacity>
           </View>
+        
         </View>
       </View>
     );
@@ -90,26 +97,7 @@ const altStyles = StyleSheet.create({
       borderBottomWidth: 1,
       borderBottomColor: 'lightgrey',
     },
-    miniTab: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 20,
-      backgroundColor: 'white',
-      borderWidth: 1,
-      borderColor: 'grey',
-    },
-    activeMiniTab: {
-      backgroundColor: 'blueviolet',
-      borderColor: 'blueviolet',
-    },
-    miniTabText: {
-      color: 'grey',
-      fontSize: 16,
-    },
-    activeMiniTabText: {
-      color: 'white',
-    },
-  
+    
     screenContainer: {
       flex: 1,
       backgroundColor: '#ffffff',
@@ -118,33 +106,6 @@ const altStyles = StyleSheet.create({
     postContainer: {
       flex: 1,
       padding: 10,
-    },
-    post: {
-      flexDirection: 'row',
-      marginBottom: 15,
-      backgroundColor: '#f8f8f8',
-      padding: 10,
-      borderRadius: 5,
-    },
-    thumbnail: {
-      width: 50,
-      height: 50,
-      marginRight: 10,
-    },
-    postDetails: {
-      flex: 1,
-    },
-    postTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    postSubtitle: {
-      fontSize: 12,
-      color: '#888',
-    },
-    postContent: {
-      marginTop: 5,
-      fontSize: 14,
     },
     searchContainer: {
       padding: 20,
@@ -161,10 +122,6 @@ const altStyles = StyleSheet.create({
     searchInput: {
       flex: 1,
       height: 40,
-    },
-    picker: {
-      height: 40,
-      width: 100,
     },
     iconContainer: {
       flexDirection: 'row',
@@ -218,7 +175,6 @@ const altStyles = StyleSheet.create({
       maxHeight: 150,
       fontWeight: 'bold',
     },
-    
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -226,10 +182,6 @@ const altStyles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     backgroundColor: '#fff',
-  },
-  fileIcon: {
-    width: 30,
-    height: 30,
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -242,10 +194,6 @@ const altStyles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     marginHorizontal: 5
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
   },
   });
   

@@ -1,15 +1,20 @@
 import { StyleSheet, Text, View, Button, StatuBar} from 'react-native';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {HomeScreen, HomeStack} from "./screens/homescreen.js";
 import CommunityScreen from "./screens/communityScreen.js";
-import LoginScreen from './screens/loginScreen.js';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ProfileScreen from './screens/profileScreen.js';
 import CreateScreen from './screens/postScreen.js';
+import {SignUpStack} from './screens/signUpScreen.js';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './firebase.js';
+import { useState, useEffect } from 'react';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function AppTabs(){
   return (
@@ -52,10 +57,28 @@ function AppTabs(){
   )
 }
 
+function AuthTabs(){
+  return (
+    <Stack.Navigator screenOptions={{
+      headerShown:false
+    }}>
+      <Stack.Screen name="Sign Up Screen" component={SignUpStack}/>
+    </Stack.Navigator>
+  );
+}
+
 export default function App() {
+  const [userInfo, setUserInfo] = useState(null)
+
+  const userHandler = (user) => user ? setUserInfo(user) : setUserInfo(null);
+
+  useEffect((
+    () => auth.onAuthStateChanged((user) => userHandler(user))
+  ), [])
+  userInfo ? console.log(userInfo) : console.log("Not logged in yet");
   return (
     <NavigationContainer>
-      <AppTabs/>
+      {userInfo ? <AppTabs/> : <AuthTabs/>}
     </NavigationContainer>
   );
 }

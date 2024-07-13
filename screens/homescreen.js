@@ -3,9 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import  FontAwesome  from '@expo/vector-icons/FontAwesome';
-import LoginScreen from './loginScreen';
 import ExpandedContentView from './expandedContentView';
 import SearchScreen from './searchScreen';
+import { useState } from 'react';
 
 
 const Stack = createNativeStackNavigator();
@@ -14,14 +14,10 @@ const Stack = createNativeStackNavigator();
 export function HomeStack(){
     return(
         <Stack.Navigator screenOptions={{headerShown:false}}>
-            <Stack.Screen 
+            <Stack.Screen
                 name="HomeScreen" 
                 component={HomeScreen}
                 options={{headerTitle:""}}/>
-            <Stack.Screen 
-                name="LoginScreen" 
-                component={LoginScreen}
-            />
             <Stack.Screen 
                 name="ExpandedContentView"
                 component={ExpandedContentView} 
@@ -55,9 +51,7 @@ export default function HomeScreen({navigation}){
                 <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
                 <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
                 <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-               
-                <Button title="Login" onPress={() => navigation.navigate("LoginScreen")}/>   
+                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>
             </ScrollView>
         </SafeAreaView>
     )
@@ -67,10 +61,10 @@ export default function HomeScreen({navigation}){
 let profilePic = require("../assets/lofi-girl.png")
 let imagePost = require("../assets/profilepic.png")
 let postMessage = "Someone said something about that one person sitting on the car"
-let heartBackground = "red"
 
 //Custom Components
 function ContentBox({navigation, profilePic, postImage, postMessage}){
+    const [likeStatus, setLikeStatus] = useState('white');
     return (
         <View style={{
             height: "auto",
@@ -147,8 +141,21 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
             }}
             >
                 <View style={styles.uxButton}>
-                    <FontAwesome name="heart" size={20} color = {heartBackground}
-                    onPress={() => heartBackground="white"}/> 
+                    {
+                        likeStatus === 'white' ? 
+                        <FontAwesome name="heart-o" size={20} 
+                            onPress={() =>{
+                                if(likeStatus === 'white'){
+                                    setLikeStatus('red')
+                                }
+                        }}/> :
+                        <FontAwesome name="heart" size={20} color='red'
+                            onPress={() =>{
+                                if(likeStatus === 'red'){
+                                    setLikeStatus('white')
+                                }
+                        }}/>
+                    }
                 </View>
                 <View style={styles.uxButton}>
                     <FontAwesome name="comment-o" size={20} /> 

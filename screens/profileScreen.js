@@ -1,6 +1,7 @@
 import {StatusBar, StyleSheet, Text, View, Button, Dimensions,ScrollView, Image} from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+const talkchatTint = 'rgb(124, 81, 163)';
 export default function ProfileScreen(){
     return(
         <View style={styles.profileContainer}>
@@ -133,7 +134,7 @@ function BottomButton({text, icon}){
 const styles = StyleSheet.create({
     profileContainer:{
         flex:1,
-        backgroundColor: "rgb(77, 140, 182)",
+        backgroundColor: talkchatTint,
         alignItems: "center",
     }
 });
