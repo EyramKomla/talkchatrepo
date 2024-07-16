@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignInScreen from './signInScreen';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword} from 'firebase/auth';
+import { Firestore, setDoc, doc, addDoc, collection } from 'firebase/firestore';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,8 @@ export function SignUpStack(){
 export default function SignUpScreen({navigation}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+
     const [loading, setLoading] = useState(false);
     const appAuth = auth;
 
@@ -43,6 +46,11 @@ export default function SignUpScreen({navigation}){
         setLoading(true);
         try{
             const response = await createUserWithEmailAndPassword(appAuth, email, password);
+            const userDet = response.user
+            await addDoc(collection(db, "users"), {
+                username: username,
+                email: email,
+            })
             alert("Account created successfully ")
             console.log(response);
         }catch(error){
@@ -51,6 +59,8 @@ export default function SignUpScreen({navigation}){
         }finally{
             setLoading(false);
         }
+
+        
 
     }
     
@@ -84,6 +94,15 @@ export default function SignUpScreen({navigation}){
                     paddingLeft: 20,
                     borderWidth: 1,
                 }} placeholder='Input your password' secureTextEntry={true} autoCapitalize='none' onChangeText={(text) => setPassword(text)} value={password}/>
+                
+                {/*username*/}
+                <TextInput style={{
+                    width:'90%',
+                    height: 50,
+                    borderRadius:20,
+                    paddingLeft: 20,
+                    borderWidth: 1,
+                }} placeholder='Choose a username' autoCapitalize='none' onChangeText={(text) => setUsername(text)} value={username}/>
                 
                 {/*sign in button*/}
                 {loading ? <ActivityIndicator size="large"  color="purple"/> :

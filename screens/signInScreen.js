@@ -19,7 +19,7 @@ export default function SignInScreen({navigation}){
         try{
             response = await signInWithEmailAndPassword(auth, email, password);
             alert('Sign in successful')
-            console.log(response);
+            console.log(response["_tokenResponse"].email);
         }catch(error){
             console.log(error);
             alert('Error: ' + error.message);

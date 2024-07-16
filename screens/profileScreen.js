@@ -1,9 +1,20 @@
-import {StatusBar, StyleSheet, Text, View, Button, Dimensions,ScrollView, Image} from 'react-native';
+import {StatusBar, StyleSheet, Text, View, Button, Dimensions,ScrollView, Image, TouchableOpacity} from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const talkchatTint = 'rgb(124, 81, 163)';
+
 export default function ProfileScreen(){
+    const signOut = async () =>{
+        try{
+            await auth.signOut();
+        }catch(e){
+            alert("Error signing out: " + e.message);
+        }
+    }
     return(
+
         <View style={styles.profileContainer}>
             <View style={{
                 width: "100%",
@@ -73,8 +84,25 @@ export default function ProfileScreen(){
                     justifyContent: "space-between",
                     alignItems: "center",
                 }}>
+                    
                     <BottomButton text="Settings" icon="settings-outline"/>
-                    <BottomButton text="Log Out" icon="log-out-outline"/>
+                    <TouchableOpacity onPress={() => signOut()}
+                        style={{
+                            flex: 1,
+                            paddingLeft: 30,
+                            flexDirection: "row",
+                            alignItems: 'center',
+                            }}
+                    >
+                        <View>
+                            <Ionicons name="log-out-outline" size={24}/>
+                        </View>
+                        <View style={{paddingLeft:10}}>
+                            <Text style={{
+                                fontSize: 16,
+                            }}>Sign Out</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
 
                 
@@ -113,7 +141,7 @@ function ProfileScreenOption({icon, text}){
 
 function BottomButton({text, icon}){
     return (
-        <View style={{
+        <TouchableOpacity style={{
             flex: 1,
             paddingLeft: 30,
             flexDirection: "row",
@@ -127,7 +155,7 @@ function BottomButton({text, icon}){
                     fontSize: 16,
                 }}>{text}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
