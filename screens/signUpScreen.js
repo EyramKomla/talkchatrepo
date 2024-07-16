@@ -7,6 +7,8 @@ import SignInScreen from './signInScreen';
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword} from 'firebase/auth';
 import { Firestore, setDoc, doc, addDoc, collection } from 'firebase/firestore';
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,18 +40,23 @@ export default function SignUpScreen({navigation}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
-
+    const [uid, setUid] = useState('');
     const [loading, setLoading] = useState(false);
     const appAuth = auth;
 
     const signUp = async () =>{
         setLoading(true);
         try{
+            setUid(uuidv4())
+            console.log(uid);
             const response = await createUserWithEmailAndPassword(appAuth, email, password);
             const userDet = response.user
-            await addDoc(collection(db, "users"), {
+            await setDoc(doc(db, "users", userDet.uid), {
                 username: username,
                 email: email,
+                bio:"",
+                profilePicture:"",
+                uid: userDet.uid,
             })
             alert("Account created successfully ")
             console.log(response);
