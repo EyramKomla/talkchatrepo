@@ -1,14 +1,19 @@
-import { StyleSheet, Text, View, Button, Dimensions,ScrollView, StatusBar, Image, TouchableOpacity, TextInput, SafeAreaView} from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions,ScrollView, StatusBar, Image, TouchableOpacity, TextInput, SafeAreaView, FlatList} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import  FontAwesome  from '@expo/vector-icons/FontAwesome';
+import EvilIcons from '@expo/vector-icons/EvilIcons'
+import AntDesign from '@expo/vector-icons/AntDesign';
 import ExpandedContentView from './expandedContentView';
 import SearchScreen from './searchScreen';
 import { useState } from 'react';
-
+import { where, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Stack = createNativeStackNavigator();
+export let uniquePostData = {};
+export let uniqueUserData = {};
 
 
 export function HomeStack(){
@@ -40,38 +45,61 @@ export function HomeStack(){
         
     );
 }
+
 export default function HomeScreen({navigation}){
+    // const getDocuments = async() =>{
+    //     let snapshot  = await getDocs(collection(db, "posts"))
+    //     snapshot.forEach((doc) =>{
+    //         console.log(doc.data())
+    //     });
+    // }
+    const [postData, setPostData] = useState("");
+    const [users, setUsers] = useState("");
+
+    onSnapshot(collection(db, "posts"), (snapshot) =>{
+       let data = snapshot.docs.map(doc => ({id:doc.id, ...doc.data()}))
+        setPostData(data)    
+    })
+    
+    onSnapshot(collection(db, "users"), (snapshot) =>{
+       let userData = snapshot.docs.map(doc => ({id:doc.id, ...doc.data()}))
+        //    data.forEach(item => console.log(item.authorName, item.body, item.title))
+        setUsers(userData)    
+    })
+    uniqueUserData = users;
+    function userData(){
+        console.log(
+            uniqueUserData.forEach((item) => console.log(item.email))
+        )
+    }
+
     return(
         <SafeAreaView style={styles.container}>
             <Header navigation={navigation}/>
-            <ScrollView style={styles.scrollView}>
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>        
-                <ContentBox navigation={navigation} profilePic={profilePic} postImage={imagePost} postMessage={postMessage}/>
-            </ScrollView>
+            <FlatList style={styles.scrollView}
+                data={postData}
+                keyExtractor={item => item.id}
+                renderItem={({item}) =>(
+                    <ContentBox wholeData={{...item}} navigation={navigation} postImage={item.imageUrl} postMessage={item.body} username={item.authorName}/>
+                )}/>
         </SafeAreaView>
     )
 }
 
 //Variables
 let profilePic = require("../assets/lofi-girl.png")
-let imagePost = require("../assets/profilepic.png")
-let postMessage = "Someone said something about that one person sitting on the car"
+
 
 //Custom Components
-function ContentBox({navigation, profilePic, postImage, postMessage}){
+function ContentBox({navigation, postPic, postImage, postMessage, username, wholeData}){
     const [likeStatus, setLikeStatus] = useState('white');
     return (
         <View style={{
             height: "auto",
             borderBottomWidth: 0.5,
             borderTopWidth: 0.5,
-            paddingBottom:15,
-            borderColor:"rgb(0 0 0)"
+            paddingBottom:0,
+            borderColor:"rgb(195, 188, 204)",
         }}>
             {/*Profile picture, username, message content*/}
             <View style={{
@@ -82,6 +110,8 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
                 <View style={{
                     height: 35,
                     flexDirection:"row",
+                    paddingLeft:5,
+                    paddingTop:10,
                 }}>
 
                     {/*Profile picture view*/}
@@ -102,36 +132,44 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
                         flex: 6,
                         justifyContent: 'center',
                     }}>
-                        <Text style={{fontWeight:'600', color:"rgb(61, 64, 66)"}}>t/TalkChatForum</Text>
+                        <Text style={{fontWeight:'600', color:"rgb(61, 64, 66)"}}>u/{username}</Text>
                     </View>
                 </View>
 
                 {/*Message*/}
                 <TouchableOpacity 
                     style={{
-                        minHeight:50,
-                        padding:10,
+                        minHeight:40,
+                        paddingLeft:15,
+                        paddingRight:15,
+                        paddingTop:10,
                     }}
-                    onPress={() => navigation.navigate("ExpandedContentView")}
+                    onPress={() =>{
+                        uniquePostData = wholeData;
+                        navigation.navigate("ExpandedContentView");
+                    }}
                 >
                     <Text style={{fontSize:16}}>{postMessage}</Text>
                 </TouchableOpacity>
             </View>
 
             {/*Post Image View*/}
-            <View style={{
-                width: '100%',
-                height: 250,
+            
+            {postImage &&
+                <View style={{
+                width: "100%",
+                height: 200,
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 10,
             }}>
-                <Image source={postImage} style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 10
+                    <Image resizeMode="cover" source={{uri:postImage}} style={{
+                    borderRadius: 10,
+                    width:"100%",
+                    height:"100%",
                 }}/>
             </View>
+            }
 
             {/* Likes, Comments and Forwards */}
             <View style={{
@@ -143,13 +181,13 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
                 <View style={styles.uxButton}>
                     {
                         likeStatus === 'white' ? 
-                        <FontAwesome name="heart-o" size={20} 
+                        <AntDesign name="hearto" size={16} 
                             onPress={() =>{
                                 if(likeStatus === 'white'){
                                     setLikeStatus('red')
                                 }
                         }}/> :
-                        <FontAwesome name="heart" size={20} color='red'
+                        <AntDesign name="heart" size={16} color='red'
                             onPress={() =>{
                                 if(likeStatus === 'red'){
                                     setLikeStatus('white')
@@ -158,10 +196,10 @@ function ContentBox({navigation, profilePic, postImage, postMessage}){
                     }
                 </View>
                 <View style={styles.uxButton}>
-                    <FontAwesome name="comment-o" size={20} /> 
+                    <EvilIcons name="comment" size={20} /> 
                 </View>
                 <View style={styles.uxButton}>
-                    <FontAwesome name="share-square-o" size={20} /> 
+                    <FontAwesome name="share-square-o" size={16} /> 
                 </View>
             </View>
         </View>

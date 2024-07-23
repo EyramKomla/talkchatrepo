@@ -5,6 +5,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import * as React from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   ScrollView,
@@ -19,6 +20,7 @@ import { auth, db, storage } from "../firebase";
 
 export default function CreateScreen({ navigation }) {
   const [selectedValue, setSelectedValue] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const [searchText, setSearchText] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [bodyText, setBodyText] = React.useState("");
@@ -82,6 +84,7 @@ export default function CreateScreen({ navigation }) {
         Alert.alert("Error", "You must be logged in to create a post.");
         return;
       }
+      setLoading(true);
 
       const imageUrl = await uploadImage();
 
@@ -98,6 +101,7 @@ export default function CreateScreen({ navigation }) {
       console.log("Post data: ", postData); // Debug log
 
       const docRef = await addDoc(collection(db, "posts"), postData);
+      setLoading(false);
       console.log("Document written with ID: ", docRef.id);
       Alert.alert("Success", "Your post has been created!");
 
@@ -114,7 +118,7 @@ export default function CreateScreen({ navigation }) {
 
   return (
     <View style={altStyles.screenContainer}>
-      <ScrollView style={altStyles.searchContainer}>
+      <ScrollView style={altStyles.scrollViewContainer}>
         <View style={altStyles.searchBar}>
           <TextInput
             style={altStyles.searchInput}
@@ -175,9 +179,11 @@ export default function CreateScreen({ navigation }) {
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={altStyles.buttonContainer}>
-            <TouchableOpacity style={altStyles.button} onPress={createPost}>
-              <Text style={altStyles.buttonText}>Post</Text>
-            </TouchableOpacity>
+            {loading ? <ActivityIndicator size="small" color="purple"/> :
+              <TouchableOpacity style={altStyles.button} onPress={createPost}>
+                <Text style={altStyles.buttonText}>Post</Text>
+              </TouchableOpacity>
+            }
           </View>
 
           <View style={altStyles.buttonContainer}>
@@ -224,7 +230,7 @@ const altStyles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  searchContainer: {
+  scrollViewContainer: {
     padding: 20,
   },
   searchBar: {
@@ -276,6 +282,7 @@ const altStyles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 50,
     marginLeft: 10,
+    marginBottom:30,
   },
   buttonText: {
     color: "white",
