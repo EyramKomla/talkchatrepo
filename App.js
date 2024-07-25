@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {HomeScreen, HomeStack} from "./screens/homescreen.js";
 import CommunityScreen from "./screens/communityScreen.js";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import ProfileScreen from './screens/profileScreen.js';
+import {ProfileScreenStack} from './screens/profileScreen.js'
 import CreateScreen from './screens/postScreen.js';
 import {SignUpStack} from './screens/signUpScreen.js';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -49,7 +49,7 @@ function AppTabs(){
 
       <Tab.Screen 
         name="Profile" 
-        component={ProfileScreen} 
+        component={ProfileScreenStack} 
         options={{
         tabBarIcon:() => <Ionicons name="person-outline" size={24}/>,
         headerShown:false}}/>
@@ -67,10 +67,11 @@ function AuthTabs(){
   );
 }
 
+export let userInformation;
 export default function App() {
   const [userInfo, setUserInfo] = useState(null)
-
   const userHandler = (user) => user ? setUserInfo(user) : setUserInfo(null);
+  userInformation = userInfo;
 
   useEffect((
     () => auth.onAuthStateChanged((user) => userHandler(user))

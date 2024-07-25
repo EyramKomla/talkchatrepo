@@ -2,10 +2,29 @@ import {StatusBar, StyleSheet, Text, View, Button, Dimensions,ScrollView, Image,
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { userInformation } from '../App';
+import ProfileEditScreen from './profileEditScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const talkchatTint = 'rgb(124, 81, 163)';
+export const talkchatTint = 'rgb(124, 81, 163)';
+const Stack = createNativeStackNavigator()
 
-export default function ProfileScreen(){
+export function ProfileScreenStack(){
+    return (
+        <Stack.Navigator screenOptions={{
+            headerShown:false,
+        }}>
+            <Stack.Screen
+                name='ProfileScreen'
+                component={ProfileScreen}/>
+            <Stack.Screen
+                name='EditScreen'
+                component={ProfileEditScreen}/>
+        </Stack.Navigator>
+    )
+}
+
+export default function ProfileScreen({navigation}){
     const signOut = async () =>{
         try{
             await auth.signOut();
@@ -27,14 +46,14 @@ export default function ProfileScreen(){
                     alignItems: "center",
                     }}>
                         <Image source={require("../assets/profilepic.png")} 
-                        style={{
-                            resizeMode:"contain",
-                            width:100, 
-                            height:100,
-                            borderTopLeftRadius: 10, 
-                            borderTopRightRadius: 10, 
-                            borderBottomRightRadius: 10, 
-                            borderBottomLeftRadius: 10,}}/>
+                            style={{
+                                resizeMode:"contain",
+                                width:100, 
+                                height:100,
+                                borderTopLeftRadius: 10, 
+                                borderTopRightRadius: 10, 
+                                borderBottomRightRadius: 10, 
+                                borderBottomLeftRadius: 10,}}/>
                     </View>
             </View>
                 
@@ -56,7 +75,7 @@ export default function ProfileScreen(){
                     <Text style={{
                         fontSize: 24,
                         fontWeight:'600',
-                    }}>u/TalkChatStaff</Text>
+                    }}>u/{userInformation.displayName}</Text>
 
                     <Text style={{
                         fontSize: 14,
@@ -68,7 +87,31 @@ export default function ProfileScreen(){
                 <View style={{
                     width:"100%"
                 }}>
-                    <ProfileScreenOption icon="person-circle-sharp" text="My profile"/>
+                    {/*Profile Tab*/}
+                    <TouchableOpacity onPress={() => navigation.navigate('EditScreen')}
+                        style={{
+                        width: "100%",
+                        height: 40,
+                        alignItems: "center",
+                        flexDirection:"row",
+                        paddingLeft: 20,
+                        paddingRight: 20,
+                        marginBottom:10,
+                        }}>
+                        <View style={{
+                            flex:1,
+                        }}>
+                            <Ionicons name='person-circle-sharp' size={28}/>
+                        </View>
+                        <View style={{
+                            flex: 6,
+                        }}>
+                            <Text style={{
+                                fontSize:16,
+                                fontWeight:'600'
+                            }}>My Profile</Text>
+                        </View>
+                    </TouchableOpacity>
                     <ProfileScreenOption icon="gift" text="Get Premium"/>
                     <ProfileScreenOption icon="stats-chart" text="History"/>
                     <ProfileScreenOption icon="bookmark-outline" text="Saved"/>

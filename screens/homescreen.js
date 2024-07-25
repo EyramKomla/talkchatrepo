@@ -1,4 +1,15 @@
-import { StyleSheet, Text, View, Button, Dimensions,ScrollView, StatusBar, Image, TouchableOpacity, TextInput, SafeAreaView, FlatList} from 'react-native';
+import { 
+    StyleSheet, 
+    Text, 
+    View, 
+    Dimensions,
+    StatusBar, 
+    Image, 
+    TouchableOpacity, 
+    TextInput, 
+    SafeAreaView, 
+    FlatList
+} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -54,24 +65,13 @@ export default function HomeScreen({navigation}){
     //     });
     // }
     const [postData, setPostData] = useState("");
-    const [users, setUsers] = useState("");
 
     onSnapshot(collection(db, "posts"), (snapshot) =>{
        let data = snapshot.docs.map(doc => ({id:doc.id, ...doc.data()}))
         setPostData(data)    
     })
     
-    onSnapshot(collection(db, "users"), (snapshot) =>{
-       let userData = snapshot.docs.map(doc => ({id:doc.id, ...doc.data()}))
-        //    data.forEach(item => console.log(item.authorName, item.body, item.title))
-        setUsers(userData)    
-    })
-    uniqueUserData = users;
-    function userData(){
-        console.log(
-            uniqueUserData.forEach((item) => console.log(item.email))
-        )
-    }
+    
 
     return(
         <SafeAreaView style={styles.container}>
