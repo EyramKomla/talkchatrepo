@@ -48,7 +48,7 @@ export default function ProfileScreen({navigation}){
 
 
     useEffect(() => {
-        const docRef = doc(db, 'users', "f5hvq75oF2WCnkhaa5IHm6FvcnA3");
+        const docRef = doc(db, 'users', userInformation.uid);
     
         const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
             if (docSnapshot.exists()) {
