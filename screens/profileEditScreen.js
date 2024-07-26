@@ -4,6 +4,7 @@ import { userInformation } from '../App';
 import { db } from '../firebase';
 import { updateDoc,doc } from 'firebase/firestore';
 import { useState } from 'react';
+import { userDetails } from './profileScreen';
 
 
 
@@ -13,7 +14,6 @@ export default function ProfileEditScreen(){
 
     const updateBio = async() =>{
         try{
-            console.log(userInformation)
             setLoading(true)
             await updateDoc(doc(db,'users',userInformation.uid), {
                 bio: bio
@@ -64,11 +64,11 @@ export default function ProfileEditScreen(){
                                 fontSize:24,
                                 fontWeight:'600',
                                 color:'#FFDAB9',
-                            }}>u/{userInformation.displayName}</Text>
+                            }}>u/{userDetails.username}</Text>
                             <Text style={{
                                 color:'#DCC6E0',
                                 width:200,
-                            }}>{userInformation.bio}</Text>
+                            }}>{userDetails.bio}</Text>
                         </View>
 
                     </View>

@@ -5,8 +5,13 @@ import { auth } from '../firebase';
 import { userInformation } from '../App';
 import ProfileEditScreen from './profileEditScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { getDoc, doc, collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useEffect, useState } from 'react';
 
 export const talkchatTint = 'rgb(124, 81, 163)';
+export let userDetails;
+
 const Stack = createNativeStackNavigator()
 
 export function ProfileScreenStack(){
@@ -25,6 +30,7 @@ export function ProfileScreenStack(){
 }
 
 export default function ProfileScreen({navigation}){
+    
     const signOut = async () =>{
         try{
             await auth.signOut();
@@ -32,6 +38,37 @@ export default function ProfileScreen({navigation}){
             alert("Error signing out: " + e.message);
         }
     }
+    const [document, setDocument] = useState(null);
+    const[loading, setLoading] = useState(true);
+    const[error, setError] = useState(null)
+
+    if(document){
+        userDetails = document;
+    }
+
+
+    useEffect(() => {
+        const docRef = doc(db, 'users', "f5hvq75oF2WCnkhaa5IHm6FvcnA3");
+    
+        const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const data = { id: docSnapshot.id, ...docSnapshot.data() };
+                setDocument(data);
+                setLoading(false);
+              } else {
+                setError('No such document!');
+                setLoading(false);
+              }
+        }, (error) => {
+          console.error("Error fetching document: ", error);
+          setError(`Error fetching document: ${error.message}`);
+          setLoading(false);
+        });
+    
+        // Clean up the subscription on unmount
+        return () => unsubscribe();
+      }, []);
+
     return(
 
         <View style={styles.profileContainer}>
@@ -72,15 +109,31 @@ export default function ProfileScreen({navigation}){
                     height:100,
                     alignItems: "center",
                 }}>
-                    <Text style={{
-                        fontSize: 24,
-                        fontWeight:'600',
-                    }}>u/{userInformation.displayName}</Text>
+                    {document ?
+                        <Text style={{
+                            fontSize: 24,
+                            fontWeight:'600',
+                        }}>
+                            u/{document.username}
+                        </Text> :
+                        <Text style={{
+                            fontSize: 24,
+                            fontWeight:'600',
+                        }}>
+                            u/{userInformation.displayName}
+                        </Text>
+                    }
 
-                    <Text style={{
-                        fontSize: 14,
-                        color: "grey"
-                    }}>Someone said something</Text>
+                    {document ? 
+                        <Text style={{
+                            fontSize: 14,
+                            color: "grey"
+                        }}>{document.bio}</Text> :
+                        <Text style={{
+                            fontSize: 14,
+                            color: "grey"
+                        }}>Someone said something</Text>
+                    }
                 </View>
 
 
