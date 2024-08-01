@@ -44,16 +44,6 @@ export function HomeStack(){
             <Stack.Screen
                 name="SearchScreen"
                 component={SearchScreen}
-                options={{
-                    headerShown:true,
-                    headerTitle: props => <SearchBar placeHolder="What are you looking for"/>,
-                    headerStyle:{
-                        marginRight:10,
-                    },
-                    headerTitleStyle:{
-                        fontSize:14,
-                    },
-                }}
             />
             <Stack.Screen 
                 name="CommentView"
@@ -253,20 +243,6 @@ function Header({navigation}){
         </View>
     )
 }
-
-function SearchBar({ placeholder, onSearch }){
-    return (
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
-        <TextInput
-          style={styles.input}
-          placeholder={placeholder}
-          selectionColor={'purple'}
-        />
-      </View>
-    );
-  };
-
 
 //Component Styling
 const styles = StyleSheet.create({

@@ -72,49 +72,54 @@ export default function CreateScreen({ navigation }) {
     }
   };
 
-  const createPost = async () => {
-    if (!title.trim()) {
-      Alert.alert("Error", "Please enter a title for your post.");
+const createPost = async () => {
+  if (!title.trim()) {
+    Alert.alert("Error", "Please enter a title for your post.");
+    return;
+  }
+
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to create a post.");
       return;
     }
+    setLoading(true);
 
-    try {
-      const user = auth.currentUser;
-      if (!user) {
-        Alert.alert("Error", "You must be logged in to create a post.");
-        return;
-      }
-      setLoading(true);
+    console.log("Starting image upload...");
+    const imageUrl = await uploadImage();
+    console.log("Image upload complete. URL:", imageUrl);
 
-      const imageUrl = await uploadImage();
+    const postData = {
+      title: title || "No Title",
+      body: bodyText || "No Body Text",
+      community: searchText || "No Community",
+      authorName: user.displayName || "Anonymous",
+      authorUid: user.uid,
+      createdAt: new Date(),
+      imageUrl: imageUrl || null,
+    };
 
-      const postData = {
-        title: title || "No Title",
-        body: bodyText || "No Body Text",
-        community: searchText || "No Community",
-        authorName: user.displayName || "Anonymous",
-        authorUid: user.uid,
-        createdAt: new Date(),
-        imageUrl: imageUrl || null,
-      };
+    console.log("Prepared post data: ", postData);
 
-      console.log("Post data: ", postData); // Debug log
+    console.log("Adding document to Firestore...");
+    const docRef = await addDoc(collection(db, "posts"), postData);
+    console.log("Document written with ID: ", docRef.id);
 
-      const docRef = await addDoc(collection(db, "posts"), postData);
-      setLoading(false);
-      console.log("Document written with ID: ", docRef.id);
-      Alert.alert("Success", "Your post has been created!");
+    setLoading(false);
+    Alert.alert("Success", "Your post has been created!");
 
-      // Clear the form
-      setTitle("");
-      setBodyText("");
-      setSearchText("");
-      setImage(null);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      Alert.alert("Error", "Failed to create post. Please try again.");
-    }
-  };
+    // Clear the form
+    setTitle("");
+    setBodyText("");
+    setSearchText("");
+    setImage(null);
+  } catch (error) {
+    console.error("Error in createPost: ", error);
+    setLoading(false);
+    Alert.alert("Error", "Failed to create post. Please try again.");
+  }
+};
 
   return (
     <View style={altStyles.screenContainer}>
