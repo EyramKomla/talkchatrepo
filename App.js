@@ -32,7 +32,8 @@ function AppTabs(){
       component={HomeStack} 
       options={{
         tabBarIcon:() => <Ionicons name="home-outline" size={24}/>, 
-        headerShown:false,}
+        headerShown:false,
+      }
       }/>
       
       <Tab.Screen 

@@ -21,6 +21,7 @@ import SearchScreen from './searchScreen';
 import { useState } from 'react';
 import { where, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
+import CommentScreen from './commentScreen';
 
 const Stack = createNativeStackNavigator();
 export let uniquePostData = {};
@@ -52,6 +53,14 @@ export function HomeStack(){
                     },
                 }}
             />
+            <Stack.Screen 
+                name="CommentView"
+                component={CommentScreen}
+                options={{
+                    headerShown:true,
+                    headerTitle:'Add comment',
+                }} 
+            />
         </Stack.Navigator>
         
     );
@@ -81,7 +90,7 @@ export default function HomeScreen({navigation}){
                 keyExtractor={item => item.id}
                 renderItem={({item}) =>(
                     <ContentBox wholeData={{...item}} navigation={navigation} postImage={item.imageUrl} postMessage={item.body} username={item.authorName}/>
-                )}/>
+            )}/>
         </SafeAreaView>
     )
 }
@@ -115,7 +124,7 @@ function ContentBox({navigation, postPic, postImage, postMessage, username, whol
                 }}>
 
                     {/*Profile picture view*/}
-                    <View style={{
+                    <TouchableOpacity style={{
                         flex: 1,
                         justifyContent:"center",
                         alignItems: "center",
@@ -125,7 +134,7 @@ function ContentBox({navigation, postPic, postImage, postMessage, username, whol
                             height:35, 
                             backgroundColor:"red",
                             borderRadius:100,}}/>
-                    </View>
+                    </TouchableOpacity>
 
                     {/*Username*/}
                     <View style={{
@@ -196,7 +205,7 @@ function ContentBox({navigation, postPic, postImage, postMessage, username, whol
                     }
                 </View>
                 <View style={styles.uxButton}>
-                    <EvilIcons name="comment" size={20} /> 
+                    <FontAwesome name="comments-o" size={20} /> 
                 </View>
                 <View style={styles.uxButton}>
                     <FontAwesome name="share-square-o" size={16} /> 

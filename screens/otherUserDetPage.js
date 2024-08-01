@@ -145,33 +145,6 @@ export default function ProfileScreen({navigation}){
                 <View style={{
                     width:"100%"
                 }}>
-                    {/*Profile Tab*/}
-                    <TouchableOpacity onPress={() => navigation.navigate('EditScreen')}
-                        style={{
-                        width: "100%",
-                        height: 40,
-                        alignItems: "center",
-                        flexDirection:"row",
-                        paddingLeft: 20,
-                        paddingRight: 20,
-                        marginBottom:10,
-                        }}>
-                        <View style={{
-                            flex:1,
-                        }}>
-                            <Ionicons name='person-circle-sharp' size={28}/>
-                        </View>
-                        <View style={{
-                            flex: 6,
-                        }}>
-                            <Text style={{
-                                fontSize:16,
-                                fontWeight:'600'
-                            }}>My Profile</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <ProfileScreenOption icon="gift" text="Get Premium"/>
-
                     {/*Post tab*/}
                     <TouchableOpacity onPress={() => navigation.navigate('PostHistoryScreen')}
                         style={{
@@ -198,7 +171,6 @@ export default function ProfileScreen({navigation}){
                         </View>
                     </TouchableOpacity>
 
-                    <ProfileScreenOption icon="bookmark-outline" text="Saved"/>
                 </View>
 
 
