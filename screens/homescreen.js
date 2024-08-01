@@ -22,6 +22,8 @@ import { useState } from 'react';
 import { where, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import CommentScreen from './commentScreen';
+import OtherUserDetPage from './otherUserDetPage';
+import OtherUserPostPage from './otherUserPostPage';
 
 const Stack = createNativeStackNavigator();
 export let uniquePostData = {};
@@ -61,10 +63,20 @@ export function HomeStack(){
                     headerTitle:'Add comment',
                 }} 
             />
+            <Stack.Screen 
+                name="OtherUserDetPage"
+                component={OtherUserDetPage} 
+            />
+            <Stack.Screen 
+                name="OtherUserPostPage"
+                component={OtherUserPostPage} 
+            />
         </Stack.Navigator>
         
     );
 }
+
+export let otherUserUid;
 
 export default function HomeScreen({navigation}){
     // const getDocuments = async() =>{
@@ -89,7 +101,7 @@ export default function HomeScreen({navigation}){
                 data={postData}
                 keyExtractor={item => item.id}
                 renderItem={({item}) =>(
-                    <ContentBox wholeData={{...item}} navigation={navigation} postImage={item.imageUrl} postMessage={item.body} username={item.authorName}/>
+                    <ContentBox wholeData={{...item}} navigation={navigation} postImage={item.imageUrl} postMessage={item.body} username={item.authorName} uid={item.authorUid}/>
             )}/>
         </SafeAreaView>
     )
@@ -100,7 +112,7 @@ let profilePic = require("../assets/lofi-girl.png")
 
 
 //Custom Components
-function ContentBox({navigation, postPic, postImage, postMessage, username, wholeData}){
+function ContentBox({navigation, postPic, postImage, postMessage, username, wholeData, uid}){
     const [likeStatus, setLikeStatus] = useState('white');
     return (
         <View style={{
@@ -124,7 +136,12 @@ function ContentBox({navigation, postPic, postImage, postMessage, username, whol
                 }}>
 
                     {/*Profile picture view*/}
-                    <TouchableOpacity style={{
+                    <TouchableOpacity onPress={() =>{
+                        navigation.navigate("OtherUserDetPage");
+                        otherUserUid = {uid}
+                        console.log(otherUserUid)
+
+                    }} style={{
                         flex: 1,
                         justifyContent:"center",
                         alignItems: "center",

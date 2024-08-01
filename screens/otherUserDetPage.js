@@ -4,37 +4,19 @@ import AntDesign from "@expo/vector-icons/AntDesign"
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { userInformation } from '../App';
-import ProfileEditScreen from './profileEditScreen';
-import PostHistoryScreen from './postHistoryScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getDoc, doc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useEffect, useState } from 'react';
+import { otherUserUid } from './homescreen';
 
 export const talkchatTint = 'rgb(124, 81, 163)';
 export let userDetails;
 
 const Stack = createNativeStackNavigator()
 
-export function ProfileScreenStack(){
-    return (
-        <Stack.Navigator screenOptions={{
-            headerShown:false,
-        }}>
-            <Stack.Screen
-                name='ProfileScreen'
-                component={ProfileScreen}/>
-            <Stack.Screen
-                name='EditScreen'
-                component={ProfileEditScreen}/>
-            <Stack.Screen
-                name='PostHistoryScreen'
-                component={PostHistoryScreen}/>
-        </Stack.Navigator>
-    )
-}
 
-export default function ProfileScreen({navigation}){
+export default function OtherUserDetPage({navigation}){
     
     const signOut = async () =>{
         try{
@@ -53,7 +35,7 @@ export default function ProfileScreen({navigation}){
 
 
     useEffect(() => {
-        const docRef = doc(db, 'users', userInformation.uid);
+        const docRef = doc(db, 'users', otherUserUid.uid);
     
         const unsubscribe = onSnapshot(docRef, (docSnapshot) => {
             if (docSnapshot.exists()) {
@@ -146,7 +128,7 @@ export default function ProfileScreen({navigation}){
                     width:"100%"
                 }}>
                     {/*Post tab*/}
-                    <TouchableOpacity onPress={() => navigation.navigate('PostHistoryScreen')}
+                    <TouchableOpacity onPress={() => navigation.navigate('OtherUserPostPage')}
                         style={{
                         width: "100%",
                         height: 40,
@@ -173,90 +155,12 @@ export default function ProfileScreen({navigation}){
 
                 </View>
 
-
-                <View style={{
-                    width: "100%",
-                    height: 60,
-                    position: "absolute",
-                    bottom: 0,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}>
-                    
-                    <BottomButton text="Settings" icon="settings-outline"/>
-                    <TouchableOpacity onPress={() => signOut()}
-                        style={{
-                            flex: 1,
-                            paddingLeft: 30,
-                            flexDirection: "row",
-                            alignItems: 'center',
-                            }}
-                    >
-                        <View>
-                            <Ionicons name="log-out-outline" size={24}/>
-                        </View>
-                        <View style={{paddingLeft:10}}>
-                            <Text style={{
-                                fontSize: 16,
-                            }}>Sign Out</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-
                 
             </View>
         </View>
     );
 }
 
-function ProfileScreenOption({icon, text}){
-    return (
-        <View style={{
-            width: "100%",
-            height: 40,
-            alignItems: "center",
-            flexDirection:"row",
-            paddingLeft: 20,
-            paddingRight: 20,
-            marginBottom:10,
-        }}>
-            <View style={{
-                flex:1,
-            }}>
-                <Ionicons name={icon} size={28}/>
-            </View>
-            <View style={{
-                flex: 6,
-            }}>
-                <Text style={{
-                    fontSize:16,
-                    fontWeight:'600'
-                }}>{text}</Text>
-            </View>
-        </View>
-    );
-}
-
-function BottomButton({text, icon}){
-    return (
-        <TouchableOpacity style={{
-            flex: 1,
-            paddingLeft: 30,
-            flexDirection: "row",
-            alignItems: 'center',
-            }}>
-            <View>
-                <Ionicons name={icon} size={24}/>
-            </View>
-            <View style={{paddingLeft:10}}>
-                <Text style={{
-                    fontSize: 16,
-                }}>{text}</Text>
-            </View>
-        </TouchableOpacity>
-    )
-}
 
 const styles = StyleSheet.create({
     profileContainer:{
